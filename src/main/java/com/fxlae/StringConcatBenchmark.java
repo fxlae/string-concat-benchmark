@@ -7,6 +7,7 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 import org.openjdk.jmh.infra.Blackhole;
+import org.slf4j.helpers.MessageFormatter;
 
 @Warmup(iterations = 4)
 @Measurement(iterations = 3)
@@ -123,6 +124,26 @@ public class StringConcatBenchmark {
 	@Benchmark
 	public void format_5(State5 state, Blackhole blackhole) {
 		blackhole.consume(String.format("%s%s%s%s%s", state.a, state.b, state.c, state.d, state.e));
+	}
+	
+	@Benchmark
+	public void slf4j_2(State2 state, Blackhole blackhole) {
+		blackhole.consume(MessageFormatter.format("{}{}", state.a, state.b).getMessage());
+	}
+	
+	@Benchmark
+	public void slf4j_3(State3 state, Blackhole blackhole) {
+		blackhole.consume(MessageFormatter.arrayFormat("{}{}{}", new Object[] { state.a, state.b, state.c }).getMessage());
+	}
+	
+	@Benchmark
+	public void slf4j_4(State4 state, Blackhole blackhole) {
+		blackhole.consume(MessageFormatter.arrayFormat("{}{}{}{}", new Object[] { state.a, state.b, state.c, state.d }).getMessage());
+	}
+	
+	@Benchmark
+	public void slf4j_5(State5 state, Blackhole blackhole) {
+		blackhole.consume(MessageFormatter.arrayFormat("{}{}{}{}{}", new Object[] { state.a, state.b, state.c, state.d, state.e }).getMessage());
 	}
 
 }
