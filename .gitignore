@@ -1,0 +1,8 @@
+bin/
+target/
+tmp/
+.metadata
+.settings/
+.classpath
+.project
+/jmh-result.json
