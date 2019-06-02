@@ -1,5 +1,9 @@
 package com.fxlae;
 
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Measurement;
@@ -12,7 +16,7 @@ import org.slf4j.helpers.MessageFormatter;
 @Warmup(iterations = 4)
 @Measurement(iterations = 3)
 @Fork(value = 2)
-public class StringConcatBenchmark {
+public class StringConcatBenchmarkNoDelimiter {
 
 	@State(Scope.Thread)
 	public static class State2 {
@@ -184,6 +188,84 @@ public class StringConcatBenchmark {
 	@Benchmark
 	public void slf4j_10(State10 state, Blackhole blackhole) {
 		blackhole.consume(MessageFormatter.arrayFormat("{}{}{}{}{}{}{}{}{}{}", new Object[] { state.a, state.b, state.c, state.d, state.e, state.f, state.g, state.h, state.i, state.j }).getMessage());
+	}
+	
+	@Benchmark
+	public void join_2(State2 state, Blackhole blackhole) {
+		blackhole.consume(String.join("", state.a, state.b));
+	}
+
+	@Benchmark
+	public void join_3(State3 state, Blackhole blackhole) {
+		blackhole.consume(String.join("", state.a, state.b, state.c));
+	}
+
+	@Benchmark
+	public void joins_4(State4 state, Blackhole blackhole) {
+		blackhole.consume(String.join("", state.a, state.b, state.c, state.d));
+	}
+
+	@Benchmark
+	public void join_5(State5 state, Blackhole blackhole) {
+		blackhole.consume(String.join("", state.a, state.b, state.c, state.d, state.e));
+	}
+	
+	@Benchmark
+	public void join_10(State10 state, Blackhole blackhole) {
+		blackhole.consume(String.join("", state.a, state.b, state.c, state.d, state.e, state.f, state.g, state.h, state.i, state.j));
+	}
+	
+	@Benchmark
+	public void stringjoiner_2(State2 state, Blackhole blackhole) {
+		blackhole.consume(new StringJoiner("").add(state.a).add(state.b).toString());
+	}
+
+	@Benchmark
+	public void stringjoiner_3(State3 state, Blackhole blackhole) {
+		blackhole.consume(new StringJoiner("").add(state.a).add(state.b).add(state.c).toString());
+	}
+
+	@Benchmark
+	public void stringjoiner_4(State4 state, Blackhole blackhole) {
+		blackhole.consume(
+				new StringJoiner("").add(state.a).add(state.b).add(state.c).add(state.d).toString());
+	}
+
+	@Benchmark
+	public void stringjoiner_5(State5 state, Blackhole blackhole) {
+		blackhole.consume(
+				new StringJoiner("").add(state.a).add(state.b).add(state.c).add(state.d).add(state.e).toString());
+	}
+	
+	@Benchmark
+	public void stringjoiner_10(State10 state, Blackhole blackhole) {
+		blackhole.consume(
+				new StringJoiner("").add(state.a).add(state.b).add(state.c).add(state.d).add(state.e).add(state.f).add(state.g).add(state.h).add(state.i).add(state.j).toString());
+	}
+	
+	@Benchmark
+	public void collector_2(State2 state, Blackhole blackhole) {
+		blackhole.consume(Stream.of(state.a, state.b).collect(Collectors.joining("")));
+	}
+
+	@Benchmark
+	public void collector_3(State3 state, Blackhole blackhole) {
+		blackhole.consume(Stream.of(state.a, state.b, state.c).collect(Collectors.joining("")));
+	}
+
+	@Benchmark
+	public void collector_4(State4 state, Blackhole blackhole) {
+		blackhole.consume(Stream.of(state.a, state.b, state.c, state.d).collect(Collectors.joining("")));;
+	}
+
+	@Benchmark
+	public void collector_5(State5 state, Blackhole blackhole) {
+		blackhole.consume(Stream.of(state.a, state.b, state.c, state.d, state.e).collect(Collectors.joining("")));
+	}
+	
+	@Benchmark
+	public void collector_10(State10 state, Blackhole blackhole) {
+		blackhole.consume(Stream.of(state.a, state.b, state.c, state.d, state.e, state.f, state.g, state.h, state.i, state.j).collect(Collectors.joining("")));
 	}
 
 }
